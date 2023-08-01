@@ -1,0 +1,11 @@
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.grid-unit {
+    outline: 1px solid black;
+    width: 50px;
+    aspect-ratio: 1/1;
+}
