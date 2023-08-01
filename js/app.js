@@ -20,6 +20,8 @@ function gridGenerator(numberOfUnit) {
         const gridUnit = document.createElement('div');
         gridUnit.classList.add('grid-unit');
 
+        gridUnit.style.backgroundColor = "white";
+
         grid.appendChild(gridUnit);
     }
 }
@@ -30,17 +32,24 @@ gridGenerator(gridSize);
 
 // ---------------------------
 
-const gridUnits = document.querySelectorAll('.grid-unit');
+/* const gridUnits = document.querySelectorAll('.grid-unit');
 
+    for (let i = 0; i < gridUnits.length; i++) {
+    gridUnits[i].addEventListener('click', applyColor);
+} */
 
 function applyColor(event) {
-    document.querySelector('.grid-unit').style.backgroundColor = "BADA55";
+    console.log(event.target);
+
+    if (event.target.style.backgroundColor === "white") {
+        event.target.style.backgroundColor = "black"
+    } else {
+        event.target.style.backgroundColor = "white"
+    }
 } 
 
-for (let i = 0; i < gridUnits.length; i++) {
-    gridUnits[i].addEventListener('toggle', applyColor);
-}
-
+// Un seul évènement pour tous les carrés. On identifie l'enfant à travers le parent
+document.querySelector('.main').addEventListener('click', applyColor);
 
 
 
