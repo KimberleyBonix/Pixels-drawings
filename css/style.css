@@ -1,19 +1,114 @@
+:root {
+    --bodyBackground: linear-gradient(60deg, rgba(66,84,199,1) 0%, rgba(108,91,207,1) 100%);
+    --headerBackground: #3148ad;
+
+    --neutral: #FFF;
+    --contrast: #000;
+    --accentClr: #;
+}
+
+body {
+    background: var(--bodyBackground);
+}
+
+.header {
+    padding: 50px;
+    background-color: var(--headerBackground);
+}
+
+.configuration {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+.button-generateGrid {
+    border: none;
+    background-color: darkorchid;
+    color: white;
+}
+
+
+#invader {
+    padding: 10rem
+}
 
 .grid {
+    margin:0px auto;
     display: flex;
     flex-wrap: wrap;
-}
+    background-color: var(--neutral);
+  }
 
-.grid-unit {
-    outline: 1px solid black;
-    width: 50px;
+.pixel {
+    box-shadow: 0px 0px 0px 3px rgba(0,0,0,0.25) inset;
     aspect-ratio: 1/1;
+    cursor: pointer;
+    position: relative;
 }
 
-.plain {
-    background-color: black;;
+.pixel::before {
+    content: '';
+    opacity: 0;
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0,0,0,.1);
+    transition: opacity .2s
 }
 
-.empty {
-    background-color: transparent;
+.pixel:hover::before {
+    opacity: 1;
 }
+
+.pixel--default {
+    background-color: white;
+}
+
+.pixel--black {
+    background-color: black;
+}
+
+.pixel--red {
+    background-color: red;
+}
+
+.pixel--yellow {
+    background-color: yellow;
+}
+
+.pixel--green {
+    background-color: green;
+}
+
+.pixel--blue {
+    background-color: blue;
+}
+
+
+
+.palette {
+    width: max-content;
+    background-color: rgba(0,0,0,.3);
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    gap: 20px;
+}
+
+.color {
+    border: none;
+    width: 25px;
+    aspect-ratio: 1/1;
+    font-size: 0;
+    cursor: pointer;
+    scale: 100%;
+    transition: all .1s
+}
+
+.color.selected,
+.color:hover {
+    scale: 120%;
+    box-shadow: 0 0 5px 2px rgba(0,0,0,.3);
+}
+
+
+
