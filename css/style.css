@@ -2,6 +2,8 @@
     --bodyBackground: linear-gradient(60deg, rgba(66,84,199,1) 0%, rgba(108,91,207,1) 100%);
     --headerBackground: #3148ad;
 
+    --boardBackground: url('../img/boardBackground.svg');
+
     --neutral: #FFF;
     --contrast: #000;
     --accentClr: #;
@@ -36,7 +38,7 @@ body {
     margin:0px auto;
     display: flex;
     flex-wrap: wrap;
-    background-color: var(--neutral);
+    background: var(--bodyBackground);
   }
 
 .pixel {
