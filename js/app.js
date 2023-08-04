@@ -1,28 +1,37 @@
 const app = {
 
     // VARIABLES STORAGES
-    GRID_SIZE: 8,
-    PIXEL_SIZE: 50,
-    BRUSH_COLOR: "pixel--black", 
+    GRID_SIZE: 20,
+    PIXEL_SIZE: 20,
+    BRUSH_COLOR: "", 
 
     styles: [
-        'default',
-        'black',
-        'red',
-        'yellow',
-        'green',
-        'blue',
+        'rgb(0,0,0)',
+        'rgb(153, 0, 0)', // rouge
+        'rgb(255, 204, 0)',// jaune
+        'rgb(51, 204, 51)', // vert
+        'rgb(0, 89, 179)', // bleu
     ] ,
 
-    gridContainer: document.querySelector('#invader'),
     formElement: document.querySelector('.configuration'),
-    palleteElement: document.querySelector('.palette'),
+
+    gridContainer: document.querySelector('.window--main'),
     gridElement: document.querySelector('.grid'),
+
+    palleteElement: document.querySelector('.palette'),
+    pickerElement: document.querySelector('.pickerContainer'),
+
+    eraseElement: document.querySelector('.window--erase'),
 
     init: function() {
         app.generateGrid(app.GRID_SIZE, app.PIXEL_SIZE);
         app.generateForm();
         app.generatePalette();
+        app.handleColor();
+
+        app.BRUSH_COLOR = document.querySelector('.color').style.backgroundColor;
+
+        app.eraseAll();
     },
 
     // --------------------------------------
@@ -49,10 +58,11 @@ const app = {
         // Gère la taille de la grille
         app.GRID_SIZE = numberOfPixel * sizeOfPixel;
         grid.style.width = `${app.GRID_SIZE}px`;
+        grid.style.backgroundSize = app.PIXEL_SIZE * 2 + 'px';
     
         // Ajouter les pixels
         for (let i = 0; i < (numberOfPixel * numberOfPixel); i++) {
-            const pixel = app.elementFactory('div', {"class": "pixel pixel--default"}, grid);
+            const pixel = app.elementFactory('div', {"class": "pixel"}, grid);
     
             pixel.style.width = `${sizeOfPixel}px`
         }
@@ -66,25 +76,24 @@ const app = {
 
         app.elementFactory('input', {
             "type" : "number",
-            "class": "input-gridSize",
+            "class": "input-configuration",
             "placeholder" : "Taille de la grille"
         }, app.formElement);
         
         app.elementFactory('input', {
             "type" : "number",
-            "class": "input-pixelSize",
+            "class": "input-configuration",
             "placeholder" : "Taille des pixels"
         }, app.formElement);
         
         app.elementFactory('input', {
             "type" : "submit",
-            "class": "button-generateGrid",
-            "value" : "Générer une nouvelle grille"
+            "class": "btn btn-generateGrid",
+            "value" : "Générer"
         }, app.formElement);
 
         app.formElement.addEventListener('submit', app.handleSubmit)
     },
-
 
     handleSubmit: function(event) {
         event.preventDefault();
@@ -102,44 +111,92 @@ const app = {
 
     // --------------------------------------
     // GENERATION DE LA PALETTE
-    generatePalette: function() {
-                                                                  
+    generatePalette: function() {                        
         app.styles.forEach(style => {                             // Génère un bouton pour chaque item dans le tableau app.stleys
-            app.elementFactory('button', {"class": `color pixel--${style}`}, app.palleteElement);
+            app.elementFactory('button', {
+                "class": "color",
+                "style": "background-color: " + style
+            }, app.palleteElement);
+        });
+
+        document.querySelector('.color').classList.add('selected');
+
+        app.palleteElement.addEventListener('click', app.selectColor)
+    },
+
+    selectColor: function (event){
+        app.BRUSH_COLOR = event.target.style.backgroundColor;
+
+        document.querySelectorAll('.color').forEach(color => {
+            color.classList.remove('selected')                
+        });
+        event.target.classList.add('selected');               // On rajoute une class "selected" à la couleur choisi
+        
+    },
+
+    // --------------------------------------
+    // AJOUT DE COULEUR A LA PALETTE
+    handleColor: function () {
+        app.elementFactory('input', {"type": "color", "class": "colorPicker"}, app.pickerElement);
+        app.elementFactory('input', {"type": "button", "class": "colorPicker-add btn", "value": "+"}, app.pickerElement);
+
+        let newColor; 
+
+        document.querySelector('.colorPicker').addEventListener('input', function(event){
+            newColor = event.target.value;
+            app.styles.push(newColor);
             
         });
 
-        app.palleteElement.addEventListener('click', function(event){
-            app.BRUSH_COLOR = event.target.classList[1];          // Fonction anonyme pour handleColor
-
-            document.querySelectorAll('.color').forEach(color => {
-                color.classList.remove('selected')                
-            });
-            event.target.classList.add('selected');               // On rajoute une class "selected" à la couleur choisi
-            
+        document.querySelector('.colorPicker-add').addEventListener('click', function(e){
+            app.addNewColor(newColor);
         })
     },
 
-    removeColor: function(targetEl){
-        app.styles.forEach(style => {
-            targetEl.classList.remove(`pixel--${style}`)
-        })
+    addNewColor: function(color) {
+        app.elementFactory('button', {
+            "class": "color",
+            "style": "background-color: " + color
+        }, 
+        app.palleteElement);
     },
+    
     
     // ---------------------------
     // Atelier des peintres
     applyColor: function(event) {
         let targetPixel = event.target;
-
-        if (targetPixel.classList.contains(app.BRUSH_COLOR)) {
-            app.removeColor(targetPixel);                          // On retire les couleurs déjà appliqué 
-        } else {
-            app.removeColor(targetPixel);                          // Dans le cas où on appliquerait une nouvelle couleur
-            targetPixel.classList.add(app.BRUSH_COLOR);            // Application de la nouvelle couleur sélectionnée
-        }
     
-        
-    } 
+        // Check if the pixel has the background color set
+        if (targetPixel.style.backgroundColor === app.BRUSH_COLOR) {
+            app.removeColor(targetPixel);
+        } 
+        else {
+            // Apply the brush color to the background of the target pixel
+            targetPixel.style.backgroundColor = app.BRUSH_COLOR;
+        }
+    },
+
+    removeColor(targetElement) {
+        targetElement.style.backgroundColor = "";
+    },
+
+    // ---------------------------
+    // RETRY
+    eraseAll: function() {
+        app.elementFactory('input', {
+            "class": "erase-grid btn",
+            "type": "button", 
+            "value": "Tout effacer"
+        },
+        app.eraseElement);
+
+        document.querySelector('.erase-grid').addEventListener('click', function(event){
+            document.querySelectorAll('.pixel').forEach(pixel => {
+                app.removeColor(pixel);
+            })
+        })
+    }
 
 } 
 

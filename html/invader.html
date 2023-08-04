@@ -7,19 +7,35 @@
   <title>Invader</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/reset.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
   
-  <header class="header">
-    <form class="configuration"></form>
-  </header>
+  
 
-  <div id="invader">
+  <div class="window window--main">
+    <div class="window__title">Your canvas</div>
+
+    <div class="window window--configuration">
+      <div class="window__title">Customize</div>
+      <form class="configuration"></form>
+    </div>
+
+    <div class="paletteContainer">
+      <div class="palette"></div>
+
+      <div class="pickerContainer"></div>
+    </div>
+
+    <div class="window window--erase">
+      <div class="window__title">Erase</div>
+      
+    </div>
   </div>
 
-  <footer class="palette">
-    
-  </footer>
+  
+
+  
 
 
   <script src="../js/app.js"></script>
