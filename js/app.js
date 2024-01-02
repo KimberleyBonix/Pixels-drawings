@@ -1,30 +1,30 @@
 const app = {
 
     // VARIABLES STORAGES
-    GRID_SIZE: 20,
+    CANVAS_SIZE: 20,
     PIXEL_SIZE: 20,
     BRUSH_COLOR: "", 
 
     styles: [
         'rgb(0,0,0)',
-        'rgb(153, 0, 0)', // rouge
-        'rgb(255, 204, 0)',// jaune
-        'rgb(51, 204, 51)', // vert
-        'rgb(0, 89, 179)', // bleu
+        'rgb(153, 0, 0)', // red
+        'rgb(255, 204, 0)',// yellow
+        'rgb(51, 204, 51)', // green
+        'rgb(0, 89, 179)', // blue
     ] ,
 
-    formElement: document.querySelector('.configuration'),
+    formElement: document.querySelector('.configuration__form'),
 
-    gridContainer: document.querySelector('.window--main'),
-    gridElement: document.querySelector('.grid'),
+    canvasContainer: document.querySelector('.main'),
+    canvasElement: document.querySelector('.canvas'),
 
-    palleteElement: document.querySelector('.palette'),
-    pickerElement: document.querySelector('.pickerContainer'),
+    palleteElement: document.querySelector('.brushes'),
+    pickerElement: document.querySelector('.colorpicker'),
 
-    eraseElement: document.querySelector('.window--erase'),
+    eraseElement: document.querySelector('.erase'),
 
     init: function() {
-        app.generateGrid(app.GRID_SIZE, app.PIXEL_SIZE);
+        app.generateGrid(app.CANVAS_SIZE, app.PIXEL_SIZE);
         app.generateForm();
         app.generatePalette();
         app.handleColor();
@@ -35,7 +35,7 @@ const app = {
     },
 
     // --------------------------------------
-    // Petite usine à créé des éléments
+    // Element factory
     elementFactory: function(type, attributes, parent) {
         let el = document.createElement(type);
 
@@ -53,43 +53,43 @@ const app = {
     generateGrid: function(numberOfPixel, sizeOfPixel) {
 
         // Création de la grille
-        const grid = app.elementFactory('div', {"class": "grid"}, app.gridContainer);
+        const canvas = app.elementFactory('div', {"class": "canvas"}, app.canvasContainer);
     
         // Gère la taille de la grille
-        app.GRID_SIZE = numberOfPixel * sizeOfPixel;
-        grid.style.width = `${app.GRID_SIZE}px`;
-        grid.style.backgroundSize = app.PIXEL_SIZE * 2 + 'px';
+        app.CANVAS_SIZE = numberOfPixel * sizeOfPixel;
+        canvas.style.width = `${app.CANVAS_SIZE}px`;
+        canvas.style.backgroundSize = app.PIXEL_SIZE * 2 + 'px';
     
         // Ajouter les pixels
         for (let i = 0; i < (numberOfPixel * numberOfPixel); i++) {
-            const pixel = app.elementFactory('div', {"class": "pixel"}, grid);
+            const pixel = app.elementFactory('div', {"class": "pixel"}, canvas);
     
             pixel.style.width = `${sizeOfPixel}px`
         }
     
-        grid.addEventListener('click', app.applyColor)
+        canvas.addEventListener('click', app.applyColor)
     },
 
     // --------------------------------------
-    // GENERATION DU FORMULAIRE
+    // Generate form for the canvas customization
     generateForm: function() {
 
         app.elementFactory('input', {
             "type" : "number",
-            "class": "input-configuration",
-            "placeholder" : "Taille de la grille"
+            "class": "configuration__form--input",
+            "placeholder" : "Canvas size"
         }, app.formElement);
         
         app.elementFactory('input', {
             "type" : "number",
-            "class": "input-configuration",
-            "placeholder" : "Taille des pixels"
+            "class": "configuration__form--input",
+            "placeholder" : "Pixels size"
         }, app.formElement);
         
         app.elementFactory('input', {
             "type" : "submit",
-            "class": "btn btn-generateGrid",
-            "value" : "Générer"
+            "class": "btn configuration__form--btn",
+            "value" : "Generate"
         }, app.formElement);
 
         app.formElement.addEventListener('submit', app.handleSubmit)
@@ -98,21 +98,21 @@ const app = {
     handleSubmit: function(event) {
         event.preventDefault();
         
-        app.GRID_SIZE = Number(event.target[0].value);            // event.target.childNodes[0].value
+        app.CANVAS_SIZE = Number(event.target[0].value);            // event.target.childNodes[0].value
         app.PIXEL_SIZE = Number(event.target[1].value);
 
-        const areYouSure = confirm("Attention, votre grille va être supprimée. Êtes-vous sûr.e de vouloir une nouvelle grille?");
+        const areYouSure = confirm("Wait! Your canvas is about to be erase. Do you want a new canvas?");
 
         if (areYouSure === true) {
-            document.querySelector('.grid').remove();             // supprime la grille actuelle
-            app.generateGrid(app.GRID_SIZE, app.PIXEL_SIZE);      // génère une nouvelle
+            document.querySelector('.canvas').remove();             // delete the active canvas
+            app.generateGrid(app.CANVAS_SIZE, app.PIXEL_SIZE);      // generate a new one
         }
     },
 
     // --------------------------------------
-    // GENERATION DE LA PALETTE
+    // Generate palette
     generatePalette: function() {                        
-        app.styles.forEach(style => {                             // Génère un bouton pour chaque item dans le tableau app.stleys
+        app.styles.forEach(style => {                             // Generate a button for each style
             app.elementFactory('button', {
                 "class": "color",
                 "style": "background-color: " + style
@@ -130,25 +130,25 @@ const app = {
         document.querySelectorAll('.color').forEach(color => {
             color.classList.remove('selected')                
         });
-        event.target.classList.add('selected');               // On rajoute une class "selected" à la couleur choisi
+        event.target.classList.add('selected');               // Add "selected" to the clicked element
         
     },
 
     // --------------------------------------
-    // AJOUT DE COULEUR A LA PALETTE
+    // Add a new color to the palette
     handleColor: function () {
-        app.elementFactory('input', {"type": "color", "class": "colorPicker"}, app.pickerElement);
-        app.elementFactory('input', {"type": "button", "class": "colorPicker-add btn", "value": "+"}, app.pickerElement);
+        app.elementFactory('input', {"type": "color", "class": "colorpicker__input"}, app.pickerElement);
+        app.elementFactory('input', {"type": "button", "class": "colorpicker__btn btn", "value": "+"}, app.pickerElement);
 
         let newColor; 
 
-        document.querySelector('.colorPicker').addEventListener('input', function(event){
+        document.querySelector('.colorpicker').addEventListener('input', function(event){
             newColor = event.target.value;
             app.styles.push(newColor);
             
         });
 
-        document.querySelector('.colorPicker-add').addEventListener('click', function(e){
+        document.querySelector('.colorpicker__btn').addEventListener('click', function(e){
             app.addNewColor(newColor);
         })
     },
@@ -185,13 +185,13 @@ const app = {
     // RETRY
     eraseAll: function() {
         app.elementFactory('input', {
-            "class": "erase-grid btn",
+            "class": "erase__btn btn",
             "type": "button", 
-            "value": "Tout effacer"
+            "value": "Erase all"
         },
         app.eraseElement);
 
-        document.querySelector('.erase-grid').addEventListener('click', function(event){
+        document.querySelector('.erase__btn').addEventListener('click', function(event){
             document.querySelectorAll('.pixel').forEach(pixel => {
                 app.removeColor(pixel);
             })
