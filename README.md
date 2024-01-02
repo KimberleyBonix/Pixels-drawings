@@ -20,4 +20,4 @@ The goal was to learn how to create HTML element with JS and the multiple uses o
 
 ## Demo
 
-You can play with it right [here](https://kimberleybonix.github.io/Pixels-drawings/) :art:
+You can play with it right [here](https://kimberleybonix.github.io/Pixels-drawings/index.html) :art:
