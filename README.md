@@ -8,6 +8,8 @@ This is my first javascript *app* that combine multiple functions and works as a
 
 The goal was to learn how to create HTML element with JS and the multiple uses of eventListeners.
 
+### → [Play with the demo](https://kimberleybonix.github.io/Pixels-drawings/index.html) :art:
+
 ## Features
 
 - Generate HTML element with presets
@@ -17,7 +19,3 @@ The goal was to learn how to create HTML element with JS and the multiple uses o
 - Add custom colors
 - Customize the canvas and the pixels size
 - Erase the canvas
-
-## Demo
-
-You can play with it right [here](https://kimberleybonix.github.io/Pixels-drawings/index.html) :art:
